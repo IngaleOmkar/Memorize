@@ -9,18 +9,33 @@ import SwiftUI
 
 struct ContentView: View {
     
-    var transport: Array<String> = ["🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻","🚚","🚛","🚜","🚖"]
+    var transport: Array<String> = ["🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻","🚚","🚛","🚜","🚖","🚝","🚆","✈️","🛩️","🚀","🛸","🚁","🚤","⛴️"]
+    
+    var food: Array<String> = ["🍏","🍎","🍐","🍊","🍋","🍌","🍇","🥐","🥯","🍞","🥖","🥨","🧀","🥚","🧈","🥞","🧇","🥩","🍗","🍖","🌭","🍔","🍟","🍕"]
+    
+    var animals: Array<String> = ["🐶","🐱","🐭","🐹","🐰","🦊","🐻","🐼","🐻‍❄️","🐨","🐯","🦁","🐮","🐷","🐽","🐸","🐵","🙈","🙉","🙊","🐒","🐔","🐧","🐦"]
+    
+    @State var emojis: Array<String> = ["🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻","🚚","🚛","🚜","🚖","🚝","🚆","✈️","🛩️","🚀","🛸","🚁","🚤","⛴️"]
     
     @State var emojiCount = 6
     
     var body: some View {
         VStack {
-            HStack {
-                ForEach(transport[0..<emojiCount], id: \.self){ emoji in
-                    CardView(content: emoji)
+            Text("Memorize!")
+                .font(.largeTitle)
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 65))]) {
+                    ForEach(emojis[0..<emojiCount], id: \.self){ emoji in
+                        CardView(content: emoji)
+                            .aspectRatio(2/3, contentMode: .fit)
+                    }
                 }
             }
+            .foregroundColor(.red)
             Spacer()
+            themeChooser
+                .padding(.vertical)
+                .font(.largeTitle)
             HStack {
                 remove
                 Spacer()
@@ -30,13 +45,56 @@ struct ContentView: View {
             .padding(.horizontal)
         }
         .padding()
-        .foregroundColor(.red)
+        
+    }
+    
+    var themeChooser: some View {
+        HStack{
+            transportTheme
+            Spacer()
+            foodTheme
+            Spacer()
+            animalTheme
+        }
+    }
+    
+    var transportTheme: some View {
+        Button(
+            action:{
+                emojis = transport.shuffled()
+            },
+            label: {
+                Image.init(systemName: "car.fill")
+            }
+        )
+    }
+    
+    var foodTheme: some View {
+        Button(
+            action:{
+                emojis = food.shuffled()
+            },
+            label: {
+                Image.init(systemName: "takeoutbag.and.cup.and.straw")
+            }
+        )
+    }
+    
+    var animalTheme: some View {
+        Button(
+            action:{
+                emojis = animals.shuffled()
+            },
+            label: {
+                Image.init(systemName: "pawprint.circle")
+            }
+        )
     }
     
     var add: some View {
         Button(
             action: {
-                if(emojiCount < transport.count){
+                if(emojiCount < emojis.count){
                     emojiCount += 1
                 }
             },
@@ -71,7 +129,7 @@ struct CardView: View {
         ZStack(content: {
             if(isFaceUp){
                 shape.fill().foregroundColor(.white)
-                shape.stroke(lineWidth: 3)
+                shape.strokeBorder(lineWidth: 3)
                 Text(content).font(.largeTitle)
             } else {
                 shape.fill()
